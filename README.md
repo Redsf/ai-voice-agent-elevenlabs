@@ -1,12 +1,34 @@
 # AI Voice Chatbot for Restaurants (ElevenLabs)
 
-> Standalone reference build, pulled out of my [73-workflow n8n portfolio](https://github.com/Redsf/N8N-workflows). Credential-free — no secrets, API keys, or client data included.
+> Standalone reference build, pulled out of my [73-workflow n8n portfolio](https://github.com/Redsf/n8n-workflows). Credential-free — no secrets, API keys, or client data included.
 >
 > Full write-up (strategy, architecture, results) in the case study: [Redsf/ai-voice-agent-homeware →](https://github.com/Redsf/Redsf/blob/main/case-studies/ai-voice-agent-homeware.md)
 
 A voice-based ordering/FAQ assistant for a restaurant, pairing an ElevenLabs conversational voice agent with an n8n-hosted RAG backend. ElevenLabs handles speech-to-text and text-to-speech; n8n handles the actual knowledge lookup and answer generation, exposed to ElevenLabs as a tool the voice agent calls mid-conversation.
 
 Built for restaurants (or similar small businesses) that want a phone- or website-based voice assistant answering menu, hours, and general questions from their own documents, without hand-writing a rules-based IVR script.
+
+## Production results
+
+From the production deployment of this architecture (homeware retailer, inbound support line):
+
+| Metric | Result |
+|---|---|
+| Calls handled end-to-end, no human | **75%** |
+| Ops cost on phone support | **−70%** |
+| Availability | **24/7** |
+
+Full breakdown: [case study →](https://github.com/Redsf/Redsf/blob/main/case-studies/ai-voice-agent-homeware.md)
+
+## Demo
+
+<!-- SCREENSHOT: n8n canvas of this workflow — save as docs/images/workflow-canvas.png and uncomment -->
+<!-- ![Workflow canvas](docs/images/workflow-canvas.png) -->
+
+<!-- SCREENSHOT: successful execution log — save as docs/images/execution-log.png and uncomment -->
+<!-- ![Execution log](docs/images/execution-log.png) -->
+
+🎥 *Video walkthrough coming soon — a live call answered by the agent, then the n8n execution behind it.*
 
 ## What it does
 
