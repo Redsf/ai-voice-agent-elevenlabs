@@ -20,16 +20,6 @@ From the production deployment of this architecture (homeware retailer, inbound 
 
 Full breakdown: [case study →](https://github.com/Redsf/Redsf/blob/main/case-studies/ai-voice-agent-homeware.md)
 
-## Demo
-
-<!-- SCREENSHOT: n8n canvas of this workflow — save as docs/images/workflow-canvas.png and uncomment -->
-<!-- ![Workflow canvas](docs/images/workflow-canvas.png) -->
-
-<!-- SCREENSHOT: successful execution log — save as docs/images/execution-log.png and uncomment -->
-<!-- ![Execution log](docs/images/execution-log.png) -->
-
-🎥 *Video walkthrough coming soon — a live call answered by the agent, then the n8n execution behind it.*
-
 ## What it does
 
 1. **Listen** is a webhook (`test_voice_message_elevenlabs`, POST) that ElevenLabs calls whenever its voice agent needs an answer, passing the transcribed question in the request body.
