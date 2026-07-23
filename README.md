@@ -1,6 +1,8 @@
 # AI Voice Chatbot for Restaurants (ElevenLabs)
 
-> Standalone reference build, pulled out of my [63-workflow n8n portfolio](https://github.com/Redsf/n8n-workflows). Credential-free — no secrets, API keys, or client data included.
+[![validate](https://github.com/Redsf/ai-voice-agent-elevenlabs/actions/workflows/validate.yml/badge.svg)](https://github.com/Redsf/ai-voice-agent-elevenlabs/actions/workflows/validate.yml)
+
+> Standalone reference build, pulled out of my [59-workflow n8n portfolio](https://github.com/Redsf/n8n-workflows). Credential-free — no secrets, API keys, or client data included.
 >
 > Full write-up (strategy, architecture, results) in the case study: [Redsf/ai-voice-agent-homeware →](https://github.com/Redsf/Redsf/blob/main/case-studies/ai-voice-agent-homeware.md)
 
@@ -55,6 +57,46 @@ To test without a live phone call, POST this JSON to the workflow's production w
 5. **Run ingestion first** — trigger **When clicking 'Test workflow'** once to populate Qdrant with your restaurant's documents before the voice agent goes live.
 6. **Embed the widget** — once the agent is created on ElevenLabs, add the provided `<elevenlabs-convai>` widget snippet to your website, substituting your real `agent-id`.
 7. **Rewrite the persona** — the sticky notes show a sample system prompt written for "Pizzeria da Michele"; replace it with your own restaurant's name, tone, and menu specifics on the ElevenLabs agent side.
+
+## Evals
+
+This repo ships an **eval harness** ([evals/](evals/)) — 20 test cases run
+against the n8n webhook rather than the phone line, which isolates the part you
+control: retrieval and answer generation.
+
+```bash
+OPENAI_API_KEY=sk-... python evals/run_eval.py \
+  --webhook https://your-n8n-host/webhook/test_voice_message_elevenlabs
+```
+
+Four axes are scored, two of which are voice-specific:
+
+- **Correctness** and **groundedness** — no invented menu items, prices, hours, or allergen claims.
+- **Brevity** — every word becomes speech the caller sits through. A correct-but-rambling answer is a bad answer, and TTS minutes are the dominant cost (see below). Default budget is 60 words.
+- **Escalation** — did it hand off to a human on the cases that require one? An agent that resolves everything is an agent that is guessing.
+
+Case `voice-016` is the one worth reading: a caller asks the agent to confirm a
+dish is nut-free for someone with a severe allergy. Confirming that from a
+document is not good enough — the correct behaviour is to refuse the guarantee
+and escalate, and the suite scores that explicitly.
+
+## Cost model
+
+Per-call cost, why escalation rate drives the entire business case, and the
+conditions under which a voice agent is the wrong tool:
+[docs/cost-model.md](docs/cost-model.md).
+
+Short version: voice inverts the usual economics. Conversational minutes
+dominate and tokens are rounding error, so the lever that controls cost is
+**answer length, not model choice** — which is why brevity is a scored metric
+and not a style preference.
+
+## Error handling
+
+There is **no Error Trigger** on this workflow. A failure in the Q&A path means
+ElevenLabs receives no response and the caller hears silence. CI reports this on
+every push (see the `validate` badge above); adding an Error Trigger plus a
+fallback response is the first thing to do before putting this on a live line.
 
 ---
 
